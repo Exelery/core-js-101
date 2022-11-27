@@ -120,7 +120,7 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
+  element(value) {
     throw new Error('Not implemented');
     // this.str += value;
     // return this;

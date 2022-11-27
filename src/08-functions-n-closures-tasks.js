@@ -25,9 +25,7 @@
  */
 function getComposition(f, g) {
   // throw new Error('Not implemented');
-  return function (x) {
-    return f(g(x));
-  };
+  return (x) => f(g(x));
 }
 
 
@@ -49,9 +47,7 @@ function getComposition(f, g) {
  */
 function getPowerFunction(exponent) {
   // throw new Error('Not implemented');
-  return function (x) {
-    return x ** exponent;
-  };
+  return (x) => x ** exponent;
 }
 
 
@@ -90,9 +86,7 @@ function getPolynom(...args) {
 function memoize(func) {
   // throw new Error('Not implemented');
   const answer = func();
-  return function () {
-    return answer;
-  };
+  return () => answer;
 }
 
 
@@ -113,7 +107,7 @@ function memoize(func) {
  */
 function retry(func, attempts) {
   // throw new Error('Not implemented');
-  return function () {
+  return () => {
     let result;
     for (let i = 0; i < attempts; i += 1) {
       try {
@@ -177,9 +171,7 @@ function logger(func, logFunc) {
  */
 function partialUsingArguments(fn, ...args1) {
   // throw new Error('Not implemented');
-  return function (...args2) {
-    return fn(...args1.concat(...args2));
-  };
+  return (...args2) => fn(...args1.concat(...args2));
 }
 
 

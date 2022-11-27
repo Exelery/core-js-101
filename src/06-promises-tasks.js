@@ -112,7 +112,7 @@ function chainPromises(array, action) {
       }).catch(() => 'test');
     }))
     .then(() => result.reduce((sum, item) => action(sum, item)))
-    .catch((e) => console.log(e));
+    .catch(() => 'ops');
 }
 
 module.exports = {
