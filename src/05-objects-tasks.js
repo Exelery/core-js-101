@@ -119,43 +119,125 @@ function fromJSON(proto, json) {
  *  For more examples see unit tests.
  */
 
+class Builder {
+  constructor() {
+    this.elementExist = false;
+    this.idExist = false;
+    this.classExist = false;
+    this.attrExist = false;
+    this.pseudoClassExist = false;
+    this.pseudoElementExist = false;
+    this.str = '';
+  }
+
+  element(value) {
+    // console.log(value, this.str, this.elementExist);
+    if (this.pseudoElementExist || this.pseudoClassExist || this.attrExist || this.classExist
+      || this.idExist) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    if (!this.elementExist) {
+      this.str += value;
+      this.elementExist = true;
+      return this;
+    }
+    throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+  }
+
+  id(value) {
+    if (this.pseudoElementExist || this.pseudoClassExist || this.attrExist || this.classExist) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    if (!this.idExist) {
+      this.idExist = true;
+      this.str += `#${value}`;
+      return this;
+    }
+    throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+  }
+
+  class(value) {
+    // throw new Error('Not implemented');
+    if (this.pseudoElementExist || this.pseudoClassExist || this.attrExist) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    this.str += `.${value}`;
+    this.classExist = true;
+    return this;
+  }
+
+  attr(value) {
+    // throw new Error('Not implemented');
+    if (this.pseudoElementExist || this.pseudoClassExist) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    this.str += `[${value}]`;
+    this.attrExist = true;
+    return this;
+  }
+
+  pseudoClass(value) {
+    // throw new Error('Not implemented');
+    if (this.pseudoElementExist) {
+      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    }
+    this.str += `:${value}`;
+    this.pseudoClassExist = true;
+    return this;
+  }
+
+  pseudoElement(value) {
+    if (!this.pseudoElementExist) {
+      this.str += `::${value}`;
+      this.pseudoElementExist = true;
+      return this;
+    }
+    throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+    // throw new Error('Not implemented');
+  }
+
+  combine(selector1, combinator, selector2) {
+    this.str = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+    return this;
+  }
+
+  stringify() {
+    return this.str;
+  }
+}
+
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
-    // this.str += value;
-    // return this;
+
+  element(value) {
+    return new Builder().element(value);
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
-    // this.str += `#${value}`;
-    // return this;
+  id(value) {
+    return new Builder().id(value);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
-    // this.str += `.${value}`;
-    // return this;
+  class(value) {
+    return new Builder().class(value);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
-    // this.str += `[${value}]`;
-    // return this;
+  attr(value) {
+    return new Builder().attr(value);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
-    // this.str += `:${value}`;
-    // return this;
+  pseudoClass(value) {
+    return new Builder().pseudoClass(value);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return new Builder().pseudoElement(value);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return new Builder().combine(selector1, combinator, selector2);
+  },
+
+  stringify() {
+    return new Builder().stringify();
   },
 };
 
